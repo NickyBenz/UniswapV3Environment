@@ -8,6 +8,10 @@
 - Streamlined impermanent loss and fees calculation for PNL 
 - Utility functions for price conversion and tick calculations 
 
+## Chains 
+
+Currently only supporting ETH Main-net 
+
 ## Requirements
 
 -GraphQL API KEY 
