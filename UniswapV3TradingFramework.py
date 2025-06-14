@@ -16,10 +16,10 @@ def priceToSqrt(price):
 Q96 = 2**96
 class V3TraderFramework:
 
-    def __init__(self,api_key: str, pool_address: str, poolFeeTier: float):
+    def __init__(self,url: str, pool_address: str, poolFeeTier: float):
         self.tickBase = 1.001
         self.pool_address = pool_address
-        self.url = f"https://gateway.thegraph.com/api/{api_key}/subgraphs/id/DiYPVdygkfjDWhbxGSqAQxwBKmfKnkWQojqeM2rkLb3G"
+        self.url = url 
         self.poolFeeTier = poolFeeTier
 
 
@@ -57,6 +57,7 @@ class V3TraderFramework:
                     }}
                     timestamp
                 }}
+            }}
             """
 
             try:
