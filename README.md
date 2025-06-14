@@ -8,4 +8,6 @@
 - Streamlined impermanent loss and fees calculation for PNL 
 - Utility functions for price conversion and tick calculations 
 
+## Requirements
 
+-GraphQL API KEY 
