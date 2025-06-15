@@ -64,7 +64,7 @@ class V3TraderFramework:
             try:
                 response = requests.post(self.url, json={"query": query})
                 data = response.json()
-                swaps = data.get("data", {}).get("swaps", [])
+                swaps.append(data.get("data", {}).get("swaps", []))
                 current_timestamp += frequency
                 if not swaps:
                     break
