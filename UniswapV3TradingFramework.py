@@ -46,7 +46,7 @@ class V3TraderFramework:
         while True:
             query = f"""   
             {{
-             swaps(first:{batch_size},where: {{pool: "{self.pool_address}", timestamp_gte: "{from_time}", timestamp_lte: "{to_time}"}}) 
+             swaps(first:{batch_size},where: {{pool: "{self.pool_address}", timestamp_gte: "{current_timestamp}", timestamp_lte: "{to_time}"}}) 
              {{
                     amount0
                     amount1
@@ -64,6 +64,7 @@ class V3TraderFramework:
             response = requests.post(url=self.url, json={"query": query})
             data = response.json()
             swap= data.get("data", {}).get("swaps", [])
+            print(swap)
             if response.status_code != 200:
                 print(f"Error: {response.status_code}, {response.text}")
                 break
