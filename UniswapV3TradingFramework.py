@@ -15,12 +15,13 @@ def priceToSqrt(price):
 
 class V3TraderFramework:
 
-    def __init__(self,url: str, pool_address: str, poolFeeTier: float):
+    def __init__(self,url: str, pool_address: str, poolFeeTier: float, api_key:str):
         self.tickBase = 1.001
         self.pool_address = pool_address
         self.url = url 
         self.poolFeeTier = poolFeeTier
         self.Q96 = 2**96
+        self.api_key = api_key
 
 
     def amount0(self,pc: int, pb: int, liquidity: int):
@@ -60,9 +61,13 @@ class V3TraderFramework:
                 }}
             }}
             """
-
-            response = requests.post(url=self.url, json={"query": query})
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.api_key}"
+            }
+            response = requests.post(url=self.url, headers=headers,json={"query": query})
             data = response.json()
+
             swap= data.get("data", {}).get("swaps", [])
             print(swap)
             if response.status_code != 200:
