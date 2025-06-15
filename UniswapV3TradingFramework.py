@@ -66,7 +66,7 @@ class V3TraderFramework:
                 data = response.json()
                 swap= data.get("data", {}).get("swaps", [])
                 current_timestamp += frequency
-                if not swaps:
+                if not swap:
                     break
                 swaps.extend(swap)
                 print(f"Total fetched: {len(swaps)}")
