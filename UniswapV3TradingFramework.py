@@ -68,7 +68,7 @@ class V3TraderFramework:
             response = requests.post(url=self.url, headers=headers,json={"query": query})
             data = response.json()
 
-            swap= data.get("data", {}).get("swaps", [])
+            swap= data.get("data", {}).get("swaps", {})
             if response.status_code != 200:
                 print(f"Error: {response.status_code}, {response.text}")
                 break
