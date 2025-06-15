@@ -61,17 +61,18 @@ class V3TraderFramework:
             }}
             """
 
-            try:
-                response = requests.post(self.url, json={"query": query})
-                data = response.json()
-                swap= data.get("data", {}).get("swaps", [])
-                current_timestamp += frequency
-                if not swap:
-                    break
-                swaps.extend(swap)
-                print(f"Total fetched: {len(swaps)}")
-            except Exception as e:
-                print(e)
+            response = requests.post(url=self.url, json={"query": query})
+            data = response.json()
+            swap= data.get("data", {}).get("swaps", [])
+            if response.status_code != 200:
+                print(f"Error: {response.status_code}, {response.text}")
+                break
+            current_timestamp += frequency
+            if not swap:
+                break
+            swaps.extend(swap)
+            print(f"Total fetched: {len(swaps)}")
+
 
         curr_price = swaps[0]['sqrtPriceX96']
         swap_data = []
