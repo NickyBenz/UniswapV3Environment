@@ -98,11 +98,13 @@ class V3TraderFramework:
                     "amount1": amount1,
                     "liquidity": liquidity,
                     "timestamp": timestamp,
+                    "tvl": tvl 
                 }
                 curr_price = price_moved
                 swap_df_data.append(swap_dict)
                 swap_data.append(swap_object)
-        return swap_data, swap_df_data
+        swap_df = pd.DataFrame(swap_df_data)
+        return swap_data, swap_df
 
     def calculatePositionalPNL(self, position: Position, swaps: list[Swap], external_asset_returns: list['float']):
         timestamps = [swap.timestamp for swap in swaps]
