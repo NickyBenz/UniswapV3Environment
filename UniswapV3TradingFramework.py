@@ -64,11 +64,11 @@ class V3TraderFramework:
             try:
                 response = requests.post(self.url, json={"query": query})
                 data = response.json()
-                swaps.append(data.get("data", {}).get("swaps", []))
+                swap= data.get("data", {}).get("swaps", [])
                 current_timestamp += frequency
                 if not swaps:
                     break
-                swaps.extend(swaps)
+                swaps.extend(swap)
                 print(f"Total fetched: {len(swaps)}")
             except Exception as e:
                 print(e)
