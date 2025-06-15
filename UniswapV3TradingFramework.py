@@ -13,7 +13,6 @@ def priceToSqrt(price):
     Q96 = 2**96
     return math.sqrt(price) * Q96
 
-Q96 = 2**96
 class V3TraderFramework:
 
     def __init__(self,url: str, pool_address: str, poolFeeTier: float):
@@ -21,12 +20,12 @@ class V3TraderFramework:
         self.pool_address = pool_address
         self.url = url 
         self.poolFeeTier = poolFeeTier
-
+        self.Q96 = 2**96
 
 
     def amount0(self,pc: int, pb: int, liquidity: int):
         numerator = (pb) - (pc)
-        denominator = Q96 * (pc) * (pb)
+        denominator = self.Q96 * (pc) * (pb)
         delta_x = numerator / denominator
         return delta_x
 
@@ -47,15 +46,17 @@ class V3TraderFramework:
         while True:
             query = f"""   
             {{
-             swaps(first:{batch_size},where: {{pool: "{self.pool_address}", timestamp_gte: "", timestamp_lte: ""}}) 
+             swaps(first:{batch_size},where: {{pool: "{self.pool_address}", timestamp_gte: "{from_time}", timestamp_lte: "{to_time}"}}) 
              {{
                     amount0
                     amount1
                     sqrtPriceX96
                     pool {{
                       liquidity
+                      totalValueLockedUSD
                     }}
                     timestamp
+                    
                 }}
             }}
             """
@@ -80,8 +81,9 @@ class V3TraderFramework:
             amount1 = swap['amount1']
             liquidity = swap['pool']['liquidity']
             timestamp = swap['timestamp']
+            tvl = swap['pool']['totalValueLockedUSD']
             formatted_swap = Swap(curr_price=curr_price, price_moved=price_moved, amount0=amount0, amount1=amount1,
-                                  curr_liquidity=liquidity, timestamp=timestamp)
+                                  curr_liquidity=liquidity, timestamp=timestamp, TVL=tvl)
             swap_data.append(formatted_swap)
         return swap_data
 

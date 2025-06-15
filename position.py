@@ -1,5 +1,5 @@
 from swap import Swap
-from UniswapV3TradingFramework import Q96
+
 class Position:
     def __init__(self,lower_price: int, upper_price: int, curr_price: int, amount0: int, amount1: int):
         if (curr_price > lower_price and curr_price < upper_price):
@@ -16,6 +16,7 @@ class Position:
             else:
                 self.amount1 = amount1
                 self.amount0 = 0
+        self.Q96 = 2**96
 
     def liquidity1(self, pc: int, pa: int, amount1: int):
         delta_price = pc - pa
@@ -23,7 +24,7 @@ class Position:
         return L_y
 
     def liquidity0(self, pc: int, pb: int, amount0: int):
-        numerator = amount0 * ((pc) * (pb) * Q96)
+        numerator = amount0 * ((pc) * (pb) * self.Q96)
         denominator = (pb) - (pc)
         L_x = numerator / denominator
         return L_x
