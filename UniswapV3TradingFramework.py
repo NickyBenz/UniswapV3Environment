@@ -68,30 +68,41 @@ class V3TraderFramework:
             response = requests.post(url=self.url, headers=headers,json={"query": query})
             data = response.json()
 
-            swap= data.get("data", {}).get("swaps", {})
+            batch= data.get("data", {}).get("swaps", {})
             if response.status_code != 200:
                 print(f"Error: {response.status_code}, {response.text}")
                 break
             current_timestamp += frequency
-            if not swap:
+            if not batch:
                 break
-            swaps.append(swap)
-            print(f"Total fetched: {len(swaps)}")
+            swaps.append(batch)
+            print(f"Total records fetched: {len(swaps)*batch_size}")
 
-
-        curr_price = swaps[0]['sqrtPriceX96']
+        curr_price = swaps[0][0]['sqrtPriceX96']
         swap_data = []
-        for swap in swaps[0:]:
-            price_moved = swap['sqrtPriceX96']
-            amount0 = swap['amount0']
-            amount1 = swap['amount1']
-            liquidity = swap['pool']['liquidity']
-            timestamp = swap['timestamp']
-            tvl = swap['pool']['totalValueLockedUSD']
-            formatted_swap = Swap(curr_price=curr_price, price_moved=price_moved, amount0=amount0, amount1=amount1,
+        swap_df_data = []
+        for batch in swaps[0:]:
+            for swap in batch:
+                price_moved = float(swap['sqrtPriceX96'])
+                amount0 = float(swap['amount0'])
+                amount1 = float(swap['amount1'])
+                liquidity = float(swap['pool']['liquidity'])
+                timestamp = float(swap['timestamp'])
+                tvl = float(swap['pool']['totalValueLockedUSD'])
+                swap_object = Swap(curr_price=curr_price, price_moved=price_moved, amount0=amount0, amount1=amount1,
                                   curr_liquidity=liquidity, timestamp=timestamp, TVL=tvl)
-            swap_data.append(formatted_swap)
-        return swap_data
+                swap_dict = {
+                    "curr_price": curr_price,
+                    "price_moved": price_moved,
+                    "amount0": amount0,
+                    "amount1": amount1,
+                    "liquidity": liquidity,
+                    "timestamp": timestamp,
+                }
+                curr_price = price_moved
+                swap_df_data.append(swap_dict)
+                swap_data.append(swap_object)
+        return swap_data, swap_df_data
 
     def calculatePositionalPNL(self, position: Position, swaps: list[Swap], external_asset_returns: list['float']):
         timestamps = [swap.timestamp for swap in swaps]
