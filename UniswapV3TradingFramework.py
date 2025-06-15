@@ -71,7 +71,7 @@ class V3TraderFramework:
             current_timestamp += frequency
             if not swap:
                 break
-            swaps.extend(swap)
+            swaps.append(swap)
             print(f"Total fetched: {len(swaps)}")
 
 
